@@ -1,0 +1,36 @@
+# docker compose up -d   ->  http://localhost:3000
+# Put it behind an https reverse proxy and set PUBLIC_URL for webhooks.
+services:
+  omnichat:
+    build: .
+    image: omnichat:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://omnichat:${POSTGRES_PASSWORD:-omnichat}@db:5432/omnichat
+      DATA_DIR: /data
+    ports:
+      - "${OMNICHAT_PORT:-3000}:3000"
+    volumes:
+      - omnichat-data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: omnichat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-omnichat}
+      POSTGRES_DB: omnichat
+    volumes:
+      - omnichat-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnichat"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  omnichat-data:
+  omnichat-db:

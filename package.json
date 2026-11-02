@@ -1,0 +1,15 @@
+{
+  "name": "omnichat",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted omnichannel inbox: WhatsApp Cloud API, WhatsApp Web (Baileys), Instagram Direct, Telegram — one chat UI, REST API, webhooks and an embeddable widget.",
+  "license": "MIT",
+  "workspaces": ["server", "web"],
+  "scripts": {
+    "dev": "npm run dev --workspace server & npm run dev --workspace web",
+    "build": "npm run build --workspace web",
+    "start": "npm start --workspace server",
+    "migrate": "npm run migrate --workspace server"
+  },
+  "engines": { "node": ">=20" }
+}
